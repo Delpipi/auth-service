@@ -14,12 +14,18 @@ public class AppUserDetails implements UserDetails{
     private String username;
     private String password;
     private Collection<? extends GrantedAuthority> autorities;
+    private AppUser appUser;
 
     public AppUserDetails(AppUser appUser) {
         this.username = appUser.getUsername();
         this.password = appUser.getPassword();
         this.autorities = appUser.getAppRoles().stream()
         .map(role -> new SimpleGrantedAuthority(role.getRoleName())).collect(Collectors.toList());
+        this.appUser = appUser;
+    }
+
+    public AppUser getAppUser(){
+        return appUser;
     }
 
     @Override
