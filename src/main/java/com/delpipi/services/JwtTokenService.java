@@ -12,8 +12,11 @@ import org.springframework.stereotype.Service;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+
+
 
 @Service
 public class JwtTokenService {
@@ -24,8 +27,14 @@ public class JwtTokenService {
     @Value("${jwt-expired-time}")
     private long jwtExpiredTime;
 
+    //Specify the desired HMAC-SHA algorithm
+    SignatureAlgorithm algorithm = SignatureAlgorithm.HS256;
+
+    //Generate a secure key for the chosen algorithm
+    byte[] keyBytes = Keys.secretKeyFor(algorithm).getEncoded();
+    
     private Key key(){
-        return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecretKey));
+        return Keys.hmacShaKeyFor(keyBytes);
     }
 
     private Claims extractAllClaims(String token){
